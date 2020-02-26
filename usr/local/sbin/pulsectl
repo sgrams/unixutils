@@ -1,0 +1,31 @@
+#!/bin/sh
+### 2020/02/24
+### pulsectl: script controlling system volume
+### Stanislaw Grams <sjg@fmdx.pl>
+### /usr/share/sbin/pulsectl
+SINK=$(pactl list short sinks | grep RUNNING | cut -f1)
+VOL=5%
+
+die() {
+  echo "$@" 1>&2
+  exit -1
+}
+
+volup() {
+  pactl set-sink-volume $SINK +$VOL
+}
+
+voldown() {
+  pactl set-sink-volume $SINK -$VOL
+}
+
+mute() {
+  pactl set-sink-mute $SINK toggle
+}
+
+case $1 in
+  volup)   volup ;;
+  voldown) voldown ;;
+  mute)    mute ;;
+  *)      die "usage: $1 volup|voldown|mute" ;;
+esac
